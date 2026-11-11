@@ -1,0 +1,35 @@
+<%- include('partials/head', { title, bodyClass: 'app-page' }) %>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <%- include('partials/topbar', { title }) %>
+  <div class="page-content">
+    <%- include('partials/flash') %>
+    <section class="page-heading-row"><div><span class="eyebrow">PENGELOLAAN PENCETAKAN</span><h1>Antrean cetak</h1><p>Periksa dokumen masuk dan perbarui status proses pencetakan.</p></div><span class="queue-total"><span></span><%= documents.length %> dokumen aktif</span></section>
+    <% if (documents.length) { %>
+    <section class="queue-list">
+      <% documents.forEach((doc) => { %>
+      <article class="content-card queue-card">
+        <div class="queue-card-head"><div class="document-name"><span class="file-icon">PDF</span><span><strong><%= doc.title %></strong><small>Dikirim <%= formatDate(doc.created_at) %></small></span></div><span class="status-badge status-<%= doc.status %>"><span></span><%= doc.status %></span></div>
+        <div class="queue-meta"><div><span>PENGIRIM</span><strong><%= doc.employee_name %></strong><small><%= doc.employee_email %></small></div><div><span>JUMLAH</span><strong><%= doc.copies %> salinan</strong></div><div><span>KETERANGAN</span><strong><%= doc.notes || '—' %></strong></div><div class="queue-document-actions"><a class="download-link" href="/dokumen/<%= doc.id %>">Buka dokumen</a><a class="download-link" href="/dokumen/<%= doc.id %>?print=1">Cetak</a><a class="download-link" href="/dokumen/<%= doc.id %>/file">Unduh PDF <span aria-hidden="true">↓</span></a></div></div>
+        <div class="queue-card-actions">
+          <form action="/admin/dokumen/<%= doc.id %>/status" method="post" class="status-form" data-status-form>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <label for="status-<%= doc.id %>">Perbarui status</label>
+            <select class="form-control status-select" id="status-<%= doc.id %>" name="status" required>
+              <% if (doc.status === 'menunggu') { %><option value="diproses">Tandai diproses</option><option value="ditolak">Tolak dokumen</option><% } else { %><option value="selesai">Tandai selesai</option><option value="ditolak">Tolak dokumen</option><% } %>
+            </select>
+            <input class="form-control rejection-input" name="rejection_reason" type="text" minlength="3" maxlength="500" placeholder="Alasan penolakan" aria-label="Alasan penolakan" hidden>
+            <button class="button button-primary button-small" type="submit">Simpan perubahan <span aria-hidden="true">→</span></button>
+          </form>
+        </div>
+      </article>
+      <% }) %>
+    </section>
+    <% } else { %>
+      <section class="content-card"><div class="empty-state"><span class="empty-icon">✓</span><strong>Antrean sudah bersih</strong><span>Belum ada dokumen yang menunggu atau sedang diproses.</span><a class="button button-outline" href="/dokumen">Lihat semua dokumen</a></div></section>
+    <% } %>
+    <footer class="page-footer"><span>© <%= new Date().getFullYear() %> SIPRINT · Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+  </div>
+</main>
+<div class="mobile-overlay"></div>
+<%- include('partials/end') %>

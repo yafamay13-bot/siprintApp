@@ -1,0 +1,35 @@
+<%- include('partials/head', { title, bodyClass: 'app-page' }) %>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <%- include('partials/topbar', { title }) %>
+  <div class="page-content">
+    <%- include('partials/flash') %>
+    <section class="page-heading-row notification-page-heading">
+      <div><span class="eyebrow">PUSAT INFORMASI</span><h1>Notifikasi</h1><p>Pembaruan terbaru tentang kiriman dan proses pencetakan dokumen Anda.</p></div>
+      <% if (unreadNotificationCount > 0) { %><form action="/notifikasi/baca-semua" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="button button-outline" type="submit">Tandai semua dibaca</button></form><% } %>
+    </section>
+    <section class="content-card notification-page-card">
+      <div class="notification-page-toolbar"><span><strong><%= notifications.length %></strong> notifikasi terbaru</span><span><i></i><%= unreadNotificationCount %> belum dibaca</span></div>
+      <% if (notifications.length) { %>
+        <div class="notification-page-list">
+          <% notifications.forEach((notification) => { %>
+            <form action="/notifikasi/<%= notification.id %>/baca" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button class="notification-page-item <%= notification.is_read ? '' : 'notification-unread' %>" type="submit">
+                <span class="notification-item-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8m-8 4h6"/></svg></span>
+                <span class="notification-item-copy"><strong><%= notification.title %></strong><span><%= notification.message %></span><small><%= formatDate(notification.created_at) %></small></span>
+                <% if (!notification.is_read) { %><span class="notification-item-dot"></span><% } %>
+                <span class="notification-open-label"><%= notification.is_read ? 'Lihat' : 'Buka' %> <b aria-hidden="true">→</b></span>
+              </button>
+            </form>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="notification-empty notification-page-empty"><span class="notification-empty-icon">✓</span><strong>Belum ada notifikasi</strong><span>Pembaruan dokumen akan muncul di halaman ini.</span></div>
+      <% } %>
+    </section>
+    <footer class="page-footer"><span>© <%= new Date().getFullYear() %> SIPRINT · Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+  </div>
+</main>
+<div class="mobile-overlay"></div>
+<%- include('partials/end') %>

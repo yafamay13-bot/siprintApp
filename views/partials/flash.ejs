@@ -1,0 +1,6 @@
+<% if (flashMessages.success.length) { %>
+  <div class="alert alert-success" role="status"><span class="alert-mark">✓</span><%= flashMessages.success[0] %><button class="alert-close" type="button" aria-label="Tutup notifikasi">×</button></div>
+<% } %>
+<% if (flashMessages.error.length) { %>
+  <div class="alert alert-error" role="alert"><span class="alert-mark">!</span><%= flashMessages.error[0] %><button class="alert-close" type="button" aria-label="Tutup notifikasi">×</button></div>
+<% } %>

@@ -1,0 +1,51 @@
+<%- include('partials/head', { title, bodyClass: 'app-page' }) %>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <%- include('partials/topbar', { title }) %>
+  <div class="page-content">
+    <%- include('partials/flash') %>
+    <section class="page-heading-row">
+      <div><span class="eyebrow">PENGATURAN AKUN</span><h1>Profil saya</h1><p>Perbarui informasi dan keamanan akun SIPRINT Anda.</p></div>
+    </section>
+    <div class="profile-layout">
+      <section class="content-card profile-form-card">
+        <div class="profile-card-heading">
+          <span class="profile-avatar-large">
+            <span class="profile-avatar-initial" <%= currentUser.profilePhoto ? 'hidden' : '' %>><%= currentUser.name.slice(0, 1).toUpperCase() %></span>
+            <img class="profile-avatar-image" src="<%= currentUser.profilePhoto ? `/foto-profil/${currentUser.id}` : '' %>" alt="Foto profil" <%= currentUser.profilePhoto ? '' : 'hidden' %>>
+          </span>
+          <span class="profile-card-identity"><strong><%= currentUser.name %></strong><small><%= currentUser.role === 'admin' ? 'Administrator SIPRINT' : 'Pegawai SIPRINT' %></small></span>
+          <form action="/profil/foto" method="post" enctype="multipart/form-data" class="profile-photo-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <label class="button button-secondary profile-photo-button" for="profile-photo">Pilih foto</label>
+            <input class="profile-photo-input" id="profile-photo" name="profile_photo" type="file" accept="image/jpeg,image/png,image/webp" required>
+            <small>JPG, PNG, atau WebP · Maks. 2 MB</small>
+            <button class="button button-primary profile-photo-submit" type="submit" hidden>Simpan foto</button>
+          </form>
+        </div>
+        <form action="/profil" method="post" class="profile-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="profile-section-heading"><span class="profile-section-number">01</span><span><strong>Informasi pribadi</strong><small>Informasi akun yang ditampilkan di SIPRINT.</small></span></div>
+          <div class="profile-fields">
+            <div class="form-stack"><label for="profile-name">Nama lengkap</label><input class="form-control" id="profile-name" name="name" type="text" minlength="2" maxlength="120" value="<%= currentUser.name %>" autocomplete="name" required></div>
+            <div class="form-stack"><label for="profile-email">Alamat email</label><input class="form-control" id="profile-email" name="email" type="email" maxlength="190" value="<%= currentUser.email %>" autocomplete="email" required></div>
+          </div>
+          <div class="profile-section-heading profile-password-heading"><span class="profile-section-number">02</span><span><strong>Ubah kata sandi</strong><small>Kosongkan bagian ini jika tidak ingin mengganti kata sandi.</small></span></div>
+          <div class="profile-fields">
+            <div class="form-stack profile-current-password"><label for="current-password">Kata sandi saat ini</label><input class="form-control" id="current-password" name="current_password" type="password" maxlength="72" autocomplete="current-password" placeholder="Diperlukan untuk ganti kata sandi"></div>
+            <div class="form-stack"><label for="new-password">Kata sandi baru</label><input class="form-control" id="new-password" name="new_password" type="password" minlength="12" maxlength="72" autocomplete="new-password" placeholder="Minimal 12 karakter"></div>
+            <div class="form-stack"><label for="confirm-password">Konfirmasi kata sandi baru</label><input class="form-control" id="confirm-password" name="confirm_password" type="password" minlength="12" maxlength="72" autocomplete="new-password" placeholder="Ulangi kata sandi baru"></div>
+          </div>
+          <div class="profile-form-footer"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/></svg>Perubahan profil tercatat di audit log.</span><button class="button button-primary" type="submit">Simpan perubahan <span aria-hidden="true">→</span></button></div>
+        </form>
+      </section>
+      <aside class="profile-side-column">
+        <section class="profile-security-card"><span class="profile-security-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/></svg></span><strong>Akun terlindungi</strong><p>Akses akun Anda dilindungi kata sandi terenkripsi dan pembatasan hak akses sesuai peran.</p><span class="role-pill"><span></span><%= currentUser.role === 'admin' ? 'ADMINISTRATOR' : 'PEGAWAI' %></span></section>
+        <section class="content-card profile-tip-card"><span class="eyebrow">TIPS KEAMANAN</span><h2>Jaga akun Anda</h2><ul><li>Gunakan kata sandi yang unik dan kuat.</li><li>Jangan bagikan kata sandi kepada orang lain.</li><li>Keluar setelah memakai perangkat bersama.</li></ul></section>
+      </aside>
+    </div>
+    <footer class="page-footer"><span>© <%= new Date().getFullYear() %> SIPRINT · Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+  </div>
+</main>
+<div class="mobile-overlay"></div>
+<%- include('partials/end') %>

@@ -1,0 +1,46 @@
+<header class="topbar">
+  <button class="mobile-menu icon-button" type="button" aria-label="Buka navigasi" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="breadcrumb"><span>Beranda</span><span class="breadcrumb-sep">/</span><strong><%= title %></strong></div>
+  <div class="topbar-right">
+    <div class="notification-control">
+      <button class="topbar-icon-button notification-trigger" type="button" aria-label="Notifikasi<%= unreadNotificationCount ? `, ${unreadNotificationCount} belum dibaca` : '' %>" aria-expanded="false" aria-controls="notification-menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+        <% if (unreadNotificationCount > 0) { %><span class="notification-dot"><%= unreadNotificationCount > 9 ? '9+' : unreadNotificationCount %></span><% } %>
+      </button>
+      <section class="notification-menu" id="notification-menu" hidden aria-label="Notifikasi terbaru">
+        <div class="notification-menu-heading"><span><strong>Notifikasi</strong><small><%= unreadNotificationCount %> belum dibaca</small></span><% if (unreadNotificationCount > 0) { %><form action="/notifikasi/baca-semua" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="notification-mark-all" type="submit">Baca semua</button></form><% } %></div>
+        <% if (recentNotifications.length) { %>
+          <div class="notification-items">
+            <% recentNotifications.forEach((notification) => { %>
+              <form action="/notifikasi/<%= notification.id %>/baca" method="post" class="notification-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="notification-item <%= notification.is_read ? '' : 'notification-unread' %>" type="submit">
+                  <span class="notification-item-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8m-8 4h6"/></svg></span>
+                  <span class="notification-item-copy"><strong><%= notification.title %></strong><span><%= notification.message %></span><small><%= formatDate(notification.created_at) %></small></span>
+                  <% if (!notification.is_read) { %><span class="notification-item-dot"></span><% } %>
+                </button>
+              </form>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="notification-empty"><span class="notification-empty-icon">✓</span><strong>Semua tenang</strong><span>Notifikasi baru akan muncul di sini.</span></div>
+        <% } %>
+        <a class="notification-view-all" href="/notifikasi">Lihat semua notifikasi <span aria-hidden="true">→</span></a>
+      </section>
+    </div>
+    <div class="profile-control">
+      <button class="topbar-profile-trigger" type="button" aria-expanded="false" aria-controls="profile-menu">
+        <span class="topbar-avatar"><% if (currentUser.profilePhoto) { %><img src="/foto-profil/<%= currentUser.id %>" alt=""><% } else { %><%= currentUser.name.slice(0, 1).toUpperCase() %><% } %></span>
+        <span class="topbar-profile-copy"><strong><%= currentUser.name %></strong><small><%= currentUser.role === 'admin' ? 'Administrator' : 'Pegawai' %></small></span>
+        <svg class="profile-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+      </button>
+      <div class="profile-menu" id="profile-menu" hidden>
+        <div class="profile-menu-identity"><span class="topbar-avatar"><% if (currentUser.profilePhoto) { %><img src="/foto-profil/<%= currentUser.id %>" alt=""><% } else { %><%= currentUser.name.slice(0, 1).toUpperCase() %><% } %></span><span><strong><%= currentUser.name %></strong><small><%= currentUser.email %></small></span></div>
+        <a href="/profil"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Profil saya</a>
+        <form action="/logout" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5m5 5H3"/><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/></svg>Keluar</button></form>
+      </div>
+    </div>
+  </div>
+</header>

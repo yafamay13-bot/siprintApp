@@ -1,0 +1,20 @@
+<%- include('partials/head', { title, bodyClass: 'app-page' }) %>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <%- include('partials/topbar', { title }) %>
+  <div class="page-content">
+    <%- include('partials/flash') %>
+    <section class="page-heading-row"><div><span class="eyebrow"><%= currentUser.role === 'admin' ? 'PUSAT DOKUMEN' : 'RIWAYAT PENGIRIMAN' %></span><h1><%= title %></h1><p><%= currentUser.role === 'admin' ? 'Seluruh dokumen yang dikirim melalui SIPRINT.' : 'Pantau status dokumen yang Anda kirim.' %></p></div><% if (currentUser.role === 'pegawai') { %><a class="button button-primary" href="/dokumen/baru"><span class="button-plus">+</span> Kirim dokumen</a><% } %></section>
+    <section class="content-card">
+      <div class="list-toolbar"><div><strong><%= documents.length %></strong> dokumen terbaru <span class="muted-text">· maks. 200 data</span></div><div class="table-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input type="search" placeholder="Cari dokumen..." data-table-search></div></div>
+      <% if (documents.length) { %>
+      <div class="table-wrap"><table class="data-table searchable-table"><thead><tr><th>Nama dokumen</th><% if (currentUser.role === 'admin') { %><th>Pengirim</th><% } %><th>Salinan</th><th>Tanggal kirim</th><th>Status</th><th>File</th><% if (currentUser.role === 'admin') { %><th>Aksi</th><% } %></tr></thead><tbody>
+      <% documents.forEach((doc) => { %><tr><td><div class="document-name"><span class="file-icon">PDF</span><span><strong><%= doc.title %></strong><small><%= doc.original_filename %></small></span></div><% if (doc.rejection_reason) { %><div class="rejection-note">Alasan: <%= doc.rejection_reason %></div><% } %></td><% if (currentUser.role === 'admin') { %><td><%= doc.employee_name %></td><% } %><td><%= doc.copies %> salinan</td><td><%= formatDate(doc.created_at) %></td><td><span class="status-badge status-<%= doc.status %>"><span></span><%= doc.status %></span></td><td><div class="document-file-actions"><a class="download-link" href="/dokumen/<%= doc.id %>" aria-label="Buka <%= doc.title %>">Buka dokumen</a><a class="download-link" href="/dokumen/<%= doc.id %>?print=1" aria-label="Cetak <%= doc.title %>">Cetak dokumen</a><a class="download-link" href="/dokumen/<%= doc.id %>/file" aria-label="Unduh <%= doc.title %>">Unduh <span aria-hidden="true">↓</span></a></div></td><% if (currentUser.role === 'admin') { %><td><form action="/admin/dokumen/<%= doc.id %>/hapus" method="post" data-confirm="Hapus dokumen '<%= doc.title %>' secara permanen?"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-button text-button-danger" type="submit">Hapus</button></form></td><% } %></tr><% }) %>
+      </tbody></table><div class="no-search-results" hidden>Tidak ada dokumen yang cocok dengan pencarian.</div></div>
+      <% } else { %><div class="empty-state"><span class="empty-icon">PDF</span><strong>Belum ada dokumen</strong><span>Dokumen yang dikirim akan muncul di halaman ini.</span><% if (currentUser.role === 'pegawai') { %><a class="button button-outline" href="/dokumen/baru">Kirim dokumen pertama</a><% } %></div><% } %>
+    </section>
+    <footer class="page-footer"><span>© <%= new Date().getFullYear() %> SIPRINT · Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+  </div>
+</main>
+<div class="mobile-overlay"></div>
+<%- include('partials/end') %>

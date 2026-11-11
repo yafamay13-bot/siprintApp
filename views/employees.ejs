@@ -1,0 +1,20 @@
+<%- include('partials/head', { title, bodyClass: 'app-page' }) %>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <%- include('partials/topbar', { title }) %>
+  <div class="page-content">
+    <%- include('partials/flash') %>
+    <section class="page-heading-row"><div><span class="eyebrow">MANAJEMEN AKUN</span><h1>Data pegawai</h1><p>Kelola akses pegawai yang menggunakan layanan SIPRINT.</p></div><span class="queue-total"><span></span><%= employees.length %> akun terdaftar</span></section>
+    <div class="employees-layout">
+      <section class="content-card employee-list-card"><div class="card-heading"><div><span class="eyebrow">PENGGUNA TERDAFTAR</span><h2>Daftar pegawai</h2></div></div>
+        <% if (employees.length) { %><div class="table-wrap"><table class="data-table"><thead><tr><th>Nama pegawai</th><th>Email</th><th>Bergabung</th><th>Status akun</th><th>Aksi</th></tr></thead><tbody>
+        <% employees.forEach((employee) => { %><tr><td><div class="employee-cell"><span class="avatar avatar-soft"><%= employee.name.slice(0, 1).toUpperCase() %></span><strong><%= employee.name %></strong></div></td><td><%= employee.email %></td><td><%= formatDate(employee.created_at) %></td><td><span class="status-badge <%= employee.is_active ? 'status-selesai' : 'status-ditolak' %>"><span></span><%= employee.is_active ? 'Aktif' : 'Nonaktif' %></span></td><td><form action="/admin/pegawai/<%= employee.id %>/aktif" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-button" type="submit"><%= employee.is_active ? 'Nonaktifkan' : 'Aktifkan' %></button></form></td></tr><% }) %>
+        </tbody></table></div><% } else { %><div class="empty-state compact-empty"><strong>Belum ada akun pegawai</strong><span>Buat akun pertama melalui formulir di samping.</span></div><% } %>
+      </section>
+      <aside class="content-card create-employee-card"><div class="card-heading"><div><span class="eyebrow">AKUN BARU</span><h2>Tambah pegawai</h2></div></div><form action="/admin/pegawai" method="post" class="form-stack"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><label for="name">Nama lengkap</label><input class="form-control" id="name" name="name" type="text" minlength="2" maxlength="120" placeholder="Nama pegawai" required><label for="email">Email</label><input class="form-control" id="email" name="email" type="email" maxlength="190" placeholder="nama@cirebonkab.go.id" required><label for="new-password">Kata sandi sementara</label><input class="form-control" id="new-password" name="password" type="password" minlength="12" maxlength="72" autocomplete="new-password" placeholder="Minimal 12 karakter" required><span class="field-help">12–72 byte. Sampaikan kata sandi awal secara pribadi kepada pegawai.</span><button class="button button-primary button-wide" type="submit">Buat akun pegawai <span aria-hidden="true">→</span></button></form></aside>
+    </div>
+    <footer class="page-footer"><span>© <%= new Date().getFullYear() %> SIPRINT · Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+  </div>
+</main>
+<div class="mobile-overlay"></div>
+<%- include('partials/end') %>

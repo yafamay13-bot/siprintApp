@@ -1,0 +1,31 @@
+<%- include('partials/head', { title, bodyClass: 'app-page document-preview-app' }) %>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <%- include('partials/topbar', { title }) %>
+  <div class="page-content document-preview-content document-preview-page" data-auto-print="<%= autoPrint ? 'true' : 'false' %>">
+    <%- include('partials/flash') %>
+    <section class="document-preview-heading">
+      <div class="document-preview-title">
+        <span class="file-icon">PDF</span>
+        <div>
+          <span class="eyebrow">PRATINJAU DOKUMEN</span>
+          <h1><%= document.title %></h1>
+          <p><%= document.original_filename %> · <%= document.copies %> salinan diminta · <%= document.status %></p>
+        </div>
+      </div>
+      <div class="document-preview-actions">
+        <a class="button button-primary button-small" href="#document-viewer">Buka dokumen</a>
+        <button class="button button-outline button-small document-print-button" type="button" <%= autoPrint ? 'disabled' : '' %>>Cetak dokumen</button>
+        <a class="button button-outline button-small" href="<%= backUrl %>"><%= backLabel %></a>
+      </div>
+    </section>
+    <% if (document.notes) { %><p class="document-preview-notes"><strong>Keterangan:</strong> <%= document.notes %></p><% } %>
+    <section class="document-preview-frame-wrap" id="document-viewer" aria-label="Pratinjau berkas PDF">
+      <iframe class="document-preview-frame" src="/dokumen/<%= document.id %>/preview-file" title="Pratinjau PDF: <%= document.title %>"></iframe>
+    </section>
+    <p class="document-print-hint">Jumlah salinan: <%= document.copies %>. Jika diminta, sesuaikan jumlah salinan pada dialog cetak.</p>
+    <footer class="page-footer"><span>© <%= new Date().getFullYear() %> SIPRINT · Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+  </div>
+</main>
+<div class="mobile-overlay"></div>
+<%- include('partials/end') %>

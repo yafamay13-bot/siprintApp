@@ -1,0 +1,74 @@
+<%- include('partials/head', { title, bodyClass: 'login-page' }) %>
+<main class="login-layout">
+  <section class="login-story">
+    <a class="brand brand-light" href="/login">
+      <span class="brand-mark brand-mark-light">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 16V6h20v10M11 35H8a4 4 0 0 1-4-4v-9a5 5 0 0 1 5-5h30a5 5 0 0 1 5 5v9a4 4 0 0 1-4 4h-3"/><path d="M13 29h22v15H13zM16 35h16M16 39h12M35 23h.01"/><path d="M18 10h12"/></svg>
+      </span>
+      <span class="brand-copy"><strong>SIPRINT</strong><small>SISTEM INFORMASI PENGIRIMAN<br>DAN PENCETAKAN DOKUMEN</small></span>
+    </a>
+    <div class="story-content">
+      <span class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span> DINAS PERPUSTAKAAN DAN KEARSIPAN</span>
+      <h1>Selamat datang di<br><em>SIPRINT</em></h1>
+      <p>Sistem informasi pengiriman dan pencetakan dokumen berbasis web dengan penerapan <strong>Role-Based Access Control (RBAC)</strong> di Dinas Perpustakaan dan Kearsipan Kabupaten Cirebon.</p>
+      <div class="story-note">
+        <span class="story-note-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <span><strong>Akses aman, dokumen lebih teratur.</strong><small>Pengiriman dan pencetakan dalam satu alur yang efisien.</small></span>
+      </div>
+      <div class="print-illustration" aria-hidden="true">
+        <span class="floating-sheet sheet-one"><i></i><i></i><i></i></span>
+        <span class="floating-sheet sheet-two"><i></i><i></i><i></i></span>
+        <span class="illustration-folder"><i></i></span>
+        <svg class="printer-drawing" viewBox="0 0 300 170">
+          <path class="printer-paper" d="M96 8h108v77H96z"/><path class="printer-paper-lines" d="M119 28h63m-63 13h63m-63 13h45"/>
+          <path class="printer-body" d="M73 69h155a20 20 0 0 1 20 20v47a13 13 0 0 1-13 13H66a13 13 0 0 1-13-13V89a20 20 0 0 1 20-20z"/>
+          <path class="printer-top" d="M73 73h155a18 18 0 0 1 18 18v12H55V91a18 18 0 0 1 18-18z"/>
+          <path class="printer-output" d="M86 112h129v42a9 9 0 0 1-9 9H95a9 9 0 0 1-9-9z"/><path class="printer-output-lines" d="M110 128h81m-81 12h81"/>
+          <circle class="printer-light" cx="77" cy="91" r="4"/><circle class="printer-light" cx="91" cy="91" r="4"/><path class="printer-slot" d="M119 96h65"/>
+        </svg>
+      </div>
+    </div>
+    <div class="login-footer"><img src="/images/logo-cirebon-transparent.png" alt="" width="34" height="42"><span>DINAS PERPUSTAKAAN DAN KEARSIPAN<br>KABUPATEN CIREBON · SIPRINT</span></div>
+  </section>
+  <section class="login-panel">
+    <div class="login-form-wrap">
+      <div class="login-card">
+        <div class="login-emblem"><img src="/images/logo-cirebon-transparent.png" alt="Lambang Kabupaten Cirebon" width="72" height="86"></div>
+        <div class="login-identity"><h2>SIPRINT</h2><p>Dinas Perpustakaan dan Kearsipan<br>Kabupaten Cirebon</p></div>
+        <div class="login-divider"><span></span><i></i><span></span></div>
+        <div class="login-heading">
+          <span class="login-user-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+          <span><strong>Masuk ke akun Anda</strong><small>Silakan login untuk melanjutkan ke sistem</small></span>
+        </div>
+        <%- include('partials/flash') %>
+        <form action="/login" method="post" class="form-stack">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="input-with-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <label class="sr-only" for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="username" placeholder="Email terdaftar" maxlength="190" required autofocus>
+        </div>
+        <div class="input-with-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg>
+          <label class="sr-only" for="password">Kata sandi</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Kata Sandi" maxlength="128" required>
+          <button class="password-toggle" type="button" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="m4 4 16 16"/></svg></button>
+        </div>
+        <div class="login-help-row">
+          <button class="login-account-help" type="button" aria-expanded="false" aria-controls="login-account-detail">
+            <span class="help-dot" aria-hidden="true">i</span>Akun dikelola administrator
+          </button>
+          <a class="login-access-note" href="#email">Akses pegawai terdaftar</a>
+        </div>
+        <p class="login-account-detail" id="login-account-detail" hidden>
+          Akun SIPRINT dibuat oleh administrator. Pegawai yang sudah terdaftar dapat masuk menggunakan email dan kata sandi akun.
+        </p>
+        <button class="button button-primary button-wide login-submit" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5m5 5H3"/><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"/></svg>Login</button>
+        </form>
+        <div class="login-security"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="m9 12 2 2 4-4"/></svg>Akses aman · Role-Based Access Control</div>
+      </div>
+      <div class="login-panel-footer">© <%= new Date().getFullYear() %> SIPRINT <span>·</span> Layanan internal Pemerintah Kabupaten Cirebon</div>
+    </div>
+  </section>
+</main>
+<%- include('partials/end') %>

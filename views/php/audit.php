@@ -1,0 +1,8 @@
+<?php page_start($title); page_sidebar($title); ?>
+<main class="main-content"><?php page_topbar($title); ?><div class="page-content">
+  <section class="page-heading-row"><div><span class="eyebrow">JEJAK AKTIVITAS</span><h1>Audit log</h1><p>Catatan aktivitas autentikasi dan pengelolaan dokumen, terbaru lebih dahulu.</p></div><span class="queue-total"><span></span><?= count($logs) ?> aktivitas</span></section>
+  <section class="content-card"><div class="table-wrap"><table class="data-table"><thead><tr><th>Aktivitas</th><th>Pengguna</th><th>Objek</th><th>Alamat IP</th><th>Waktu</th><th>Detail</th></tr></thead><tbody><?php foreach ($logs as $log) {
+      $details = $log['details'] ? json_decode((string)$log['details'], true) : null;
+      ?><tr><td><span class="audit-action"><?= e(str_replace('_', ' ', $log['action'])) ?></span></td><td><?= e($log['user_name'] ?: 'Akun dihapus') ?><small class="table-subline"><?= e($log['user_email'] ?: '') ?></small></td><td><?= e($log['entity_type']) ?><?= $log['entity_id'] ? ' #' . e($log['entity_id']) : '' ?></td><td><?= e($log['ip_address'] ?: '—') ?></td><td><?= e(format_date($log['created_at'])) ?></td><td><details class="audit-details"><summary>Lihat</summary><pre><?= e($details ? json_encode($details, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : 'Tidak ada detail tambahan') ?></pre></details></td></tr><?php } ?></tbody></table></div><?php if (!$logs) { ?><div class="empty-state compact-empty"><strong>Belum ada aktivitas tercatat</strong><span>Aktivitas sistem akan muncul di sini.</span></div><?php } ?></section>
+  <footer class="page-footer"><span>© <?= date('Y') ?> SIPRINT · Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+<?php page_end(); ?>

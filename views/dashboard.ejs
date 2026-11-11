@@ -1,0 +1,91 @@
+<%- include('partials/head', { title, bodyClass: 'app-page dashboard-page' }) %>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <%- include('partials/topbar', { title }) %>
+  <div class="page-content dashboard-content">
+    <%- include('partials/flash') %>
+    <section class="dashboard-hero">
+      <div class="dashboard-hero-copy">
+        <span class="hero-kicker"><span></span> DINAS PERPUSTAKAAN DAN KEARSIPAN KABUPATEN CIREBON</span>
+        <h1>Selamat <%= greeting %>,<br><em><%= currentUser.name.split(' ')[0] %>.</em></h1>
+        <p>Semoga aktivitas Anda hari ini berjalan lancar.</p>
+        <span class="hero-caption"><img src="/images/logo-cirebon-transparent.png" alt="" width="24" height="28">Sistem Informasi Pengiriman dan Pencetakan Dokumen</span>
+      </div>
+      <a class="button hero-button" href="<%= currentUser.role === 'admin' ? '/admin/antrean' : '/dokumen/baru' %>">
+        <%= currentUser.role === 'admin' ? 'Kelola antrean' : 'Ajukan kiriman' %><span aria-hidden="true">→</span>
+      </a>
+      <span class="hero-slide-indicator" aria-hidden="true"><i></i><i></i><i></i></span>
+    </section>
+
+    <section class="stats-grid dashboard-stats" aria-label="Ringkasan dokumen">
+      <a class="stat-card dashboard-stat-card" href="/dokumen">
+        <span class="dashboard-stat-icon stat-icon-navy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8m-8 4h6"/></svg></span>
+        <span class="dashboard-stat-copy"><strong>Semua Dokumen</strong><b><%= counts.total || 0 %></b><small><%= currentUser.role === 'admin' ? 'Dokumen yang tercatat' : 'Dokumen yang Anda kirim' %></small></span>
+        <span class="dashboard-stat-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="stat-card dashboard-stat-card" href="<%= currentUser.role === 'admin' ? '/admin/antrean' : '/dokumen' %>">
+        <span class="dashboard-stat-icon stat-icon-violet"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <span class="dashboard-stat-copy"><strong>Menunggu Diproses</strong><b><%= counts.menunggu || 0 %></b><small>Menunggu verifikasi</small></span>
+        <span class="dashboard-stat-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="stat-card dashboard-stat-card" href="<%= currentUser.role === 'admin' ? '/admin/antrean' : '/dokumen' %>">
+        <span class="dashboard-stat-icon stat-icon-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span>
+        <span class="dashboard-stat-copy"><strong>Diproses</strong><b><%= counts.diproses || 0 %></b><small>Sedang dalam proses</small></span>
+        <span class="dashboard-stat-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="stat-card dashboard-stat-card" href="/dokumen">
+        <span class="dashboard-stat-icon stat-icon-cyan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></span>
+        <span class="dashboard-stat-copy"><strong>Selesai</strong><b><%= counts.selesai || 0 %></b><small>Berhasil dicetak</small></span>
+        <span class="dashboard-stat-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+      </a>
+    </section>
+
+    <section class="dashboard-lower-grid">
+      <article class="content-card dashboard-activity-card">
+        <div class="dashboard-card-heading">
+          <h2><span></span>Aktivitas Terbaru</h2>
+          <a class="text-link" href="/dokumen">Lihat semua <span aria-hidden="true">→</span></a>
+        </div>
+        <% if (recentDocuments.length) { %>
+          <div class="dashboard-activity-list">
+            <% recentDocuments.forEach((doc) => { %>
+              <a class="dashboard-activity-item" href="/dokumen/<%= doc.id %>/file">
+                <span class="activity-document-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8m-8 4h6"/></svg></span>
+                <span class="activity-item-copy"><strong><%= doc.title %></strong><small><%= currentUser.role === 'admin' ? `${doc.employee_name} · ` : '' %><%= formatDate(doc.created_at) %></small></span>
+                <span class="status-badge status-<%= doc.status %>"><span></span><%= doc.status %></span>
+                <span class="activity-chevron">›</span>
+              </a>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="dashboard-empty">
+            <div class="empty-folder-art" aria-hidden="true"><span></span><i></i><i></i><i></i></div>
+            <strong>Belum ada aktivitas</strong>
+            <span>Aktivitas terbaru Anda akan muncul di sini.</span>
+            <% if (currentUser.role === 'pegawai') { %><a href="/dokumen/baru">Kirim dokumen pertama <span aria-hidden="true">→</span></a><% } %>
+          </div>
+        <% } %>
+      </article>
+      <aside class="content-card dashboard-quick-card">
+        <div class="dashboard-card-heading"><h2><span></span>Akses Cepat</h2></div>
+        <nav class="quick-link-list" aria-label="Akses cepat">
+          <% if (currentUser.role === 'pegawai') { %>
+            <a class="quick-link" href="/dokumen/baru"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></svg></span><span>Ajukan Pengiriman</span><span class="quick-link-arrow">›</span></a>
+            <a class="quick-link" href="/dokumen"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span>Lihat Dokumen Saya</span><span class="quick-link-arrow">›</span></a>
+            <a class="quick-link" href="/dokumen"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span><span>Cek Status Dokumen</span><span class="quick-link-arrow">›</span></a>
+            <a class="quick-link" href="/profil"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span>Pengaturan Profil</span><span class="quick-link-arrow">›</span></a>
+          <% } else { %>
+            <a class="quick-link" href="/admin/antrean"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg></span><span>Kelola Antrean Cetak</span><span class="quick-link-arrow">›</span></a>
+            <a class="quick-link" href="/dokumen"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><span>Lihat Seluruh Dokumen</span><span class="quick-link-arrow">›</span></a>
+            <a class="quick-link" href="/admin/pegawai"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0m3-12v6m-3-3h6"/></svg></span><span>Kelola Data Pegawai</span><span class="quick-link-arrow">›</span></a>
+            <a class="quick-link" href="/admin/audit"><span class="quick-link-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span>Lihat Audit Log</span><span class="quick-link-arrow">›</span></a>
+          <% } %>
+        </nav>
+        <div class="dashboard-service-note"><img src="/images/logo-cirebon-transparent.png" alt="" width="27" height="32"><span><strong>Layanan Internal</strong><small>Untuk pegawai Dinas Kabupaten Cirebon.</small></span></div>
+      </aside>
+    </section>
+    <footer class="page-footer"><span>© <%= new Date().getFullYear() %> SIPRINT · Dinas Perpustakaan dan Kearsipan Kabupaten Cirebon</span><span>LAYANAN INTERNAL</span></footer>
+  </div>
+</main>
+<div class="mobile-overlay"></div>
+<%- include('partials/end') %>

@@ -1,0 +1,8 @@
+<%- include('partials/head', { title, bodyClass: 'error-page' }) %>
+<main class="error-card">
+  <a class="brand" href="<%= currentUser ? '/' : '/login' %>"><span class="brand-mark"><img src="/images/logo-cirebon-transparent.png" alt="" width="31" height="37"></span><span class="brand-copy"><strong>SIPRINT</strong><small>LAYANAN INTERNAL</small></span></a>
+  <span class="error-code"><%= title === 'Akses ditolak' ? '403' : title === 'Halaman tidak ditemukan' || title === 'Dokumen tidak ditemukan' ? '404' : '—' %></span>
+  <h1><%= title %></h1><p><%= message %></p>
+  <a class="button button-primary" href="<%= currentUser ? '/' : '/login' %>"><span aria-hidden="true">←</span> Kembali</a>
+</main>
+<%- include('partials/end') %>
